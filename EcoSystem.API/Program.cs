@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using EcoSystem.Data;
+using EcoSystem.Business.Interfaces;
+using EcoSystem.Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar la conexión a PostgreSQL (Supabase)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("SupabasePostgres")));
+
+builder.Services.AddScoped<IProductoService, ProductoService>();
 
 // Habilitar el uso de controladores
 builder.Services.AddControllers();

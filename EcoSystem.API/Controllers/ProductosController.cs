@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EcoSystem.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using EcoSystem.Data.Models;
+using EcoSystem.Business.Interfaces;
 
 namespace EcoSystem.API.Controllers
 {
@@ -9,44 +10,46 @@ namespace EcoSystem.API.Controllers
     [ApiController]
     public class ProductosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IProductoService _productoService;
 
-        public ProductosController(AppDbContext context)
+        // Inyectamos la interfaz del servicio en lugar de la base de datos
+        public ProductosController(IProductoService productoService)
         {
-            _context = context;
+            _productoService = productoService;
         }
 
         // GET: api/Productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            // Consultamos la tabla Productos en Supabase
-            var productos = await _context.Productos.ToListAsync();
-
-            // Devolvemos un código HTTP 200 OK junto con los datos
+            var productos = await _productoService.GetProductosAsync();
             return Ok(productos);
         }
+
+        // GET: api/Productos/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Producto>> GetProducto(int id)
+        {
+            var producto = await _productoService.GetProductoByIdAsync(id);
+            if (producto == null) return NotFound();
+
+            return Ok(producto);
+        }
+
         // POST: api/Productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
-            _context.Productos.Add(producto);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetProductos), new { id = producto.Id }, producto);
+            var nuevoProducto = await _productoService.CreateProductoAsync(producto);
+            return CreatedAtAction(nameof(GetProducto), new { id = nuevoProducto.Id }, nuevoProducto);
         }
 
         // PUT: api/Productos/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
-            if (id != producto.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(producto).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            var actualizado = await _productoService.UpdateProductoAsync(id, producto);
+            if (!actualizado) return BadRequest();
 
             return NoContent();
         }
@@ -55,14 +58,8 @@ namespace EcoSystem.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
         {
-            var producto = await _context.Productos.FindAsync(id);
-            if (producto == null)
-            {
-                return NotFound();
-            }
-
-            _context.Productos.Remove(producto);
-            await _context.SaveChangesAsync();
+            var eliminado = await _productoService.DeleteProductoAsync(id);
+            if (!eliminado) return NotFound();
 
             return NoContent();
         }

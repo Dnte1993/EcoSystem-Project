@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EcoSystem.Data\EcoSystem.Data.csproj" />
+    <ProjectReference Include="..\EcoSystem.Business\EcoSystem.Business.csproj" />
   </ItemGroup>
 
 </Project>
