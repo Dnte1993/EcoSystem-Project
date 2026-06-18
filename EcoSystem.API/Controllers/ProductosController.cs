@@ -45,6 +45,8 @@ namespace EcoSystem.API.Controllers
             var nuevoProducto = await _productoService.CreateProductoAsync(producto);
             return CreatedAtAction(nameof(GetProducto), new { id = nuevoProducto.Id }, nuevoProducto);
         }
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         // PUT: api/Productos/{id}
         [HttpPut("{id}")]
@@ -55,7 +57,8 @@ namespace EcoSystem.API.Controllers
 
             return NoContent();
         }
-
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         // DELETE: api/Productos/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)
