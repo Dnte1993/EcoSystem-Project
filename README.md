@@ -8,3 +8,11 @@ Este repositorio contiene la estructura base del proyecto EcoSystem Connect, con
 * **EcoSystem.Data (Capa de Acceso a Datos):** Biblioteca de clases responsable de la comunicación directa con la base de datos mediante Entity Framework Core.
 
 **Regla de Oro Aplicada:** Cada capa tiene una responsabilidad única y la comunicación fluye de forma estrictamente descendente (API -> Business -> Data).
+
+
+
+## Tecnologías Utilizadas
+* C# y ASP.NET Core 8
+* Entity Framework Core (Code-First)
+* Base de Datos Relacional: PostgreSQL (alojado en Supabase)
+* Documentación de API: Swagger UI
