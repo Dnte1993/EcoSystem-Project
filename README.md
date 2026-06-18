@@ -16,3 +16,10 @@ Este repositorio contiene la estructura base del proyecto EcoSystem Connect, con
 * Entity Framework Core (Code-First)
 * Base de Datos Relacional: PostgreSQL (alojado en Supabase)
 * Documentación de API: Swagger UI
+
+
+## Instrucciones de Ejecución
+1. Clonar el repositorio.
+2. Configurar la cadena de conexión de PostgreSQL en `appsettings.json`.
+3. Abrir la terminal en la carpeta `EcoSystem.API`.
+4. Ejecutar el comando `dotnet run`.
