@@ -36,7 +36,8 @@ namespace EcoSystem.API.Controllers
 
             return Ok(producto);
         }
-
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         // POST: api/Productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
