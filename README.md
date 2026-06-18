@@ -4,6 +4,7 @@ Este repositorio contiene la estructura base del proyecto EcoSystem Connect, con
 
 ## Estructura de Capas
 * **EcoSystem.API (Capa de Presentación):** Proyecto ASP.NET Core Web API encargado exclusivamente de exponer los endpoints HTTP y comunicarse con el exterior.
+* **EcoSystem.Business (Capa de Negocio):** Biblioteca de clases que centraliza las reglas de negocio, validaciones e interfaces de servicios.
 * **EcoSystem.Data (Capa de Acceso a Datos):** Biblioteca de clases responsable de la comunicación directa con la base de datos mediante Entity Framework Core.
 
-**Regla de Oro Aplicada:** Cada capa tiene una responsabilidad única y la comunicación fluye de forma estrictamente descendente.
+**Regla de Oro Aplicada:** Cada capa tiene una responsabilidad única y la comunicación fluye de forma estrictamente descendente (API -> Business -> Data).
