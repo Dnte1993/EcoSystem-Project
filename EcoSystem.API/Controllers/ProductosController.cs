@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EcoSystem.Data.Models;
@@ -17,7 +18,7 @@ namespace EcoSystem.API.Controllers
         {
             _productoService = productoService;
         }
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
         // GET: api/Productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
