@@ -2,13 +2,13 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiar el archivo del proyecto y restaurar dependencias
-COPY ["EcoSystem.API.csproj", "./"]
-RUN dotnet restore "./EcoSystem.API.csproj"
-
-# Copiar el resto del código y compilar
+# Copiamos todo el repositorio completo (API, Business, Data) al contenedor
 COPY . .
-RUN dotnet publish "EcoSystem.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Nos movemos a la carpeta de la API para compilar desde ahí
+WORKDIR /src/EcoSystem.API
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 # Etapa de ejecución (Runtime)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
