@@ -11,5 +11,8 @@ namespace EcoSystem.Data
 
         // Aquí declaramos nuestra tabla
         public DbSet<Producto> Productos { get; set; }
+
+        // --- NUEVA LÍNEA PARA USUARIOS ---
+        public DbSet<User> Users { get; set; }
     }
 }
