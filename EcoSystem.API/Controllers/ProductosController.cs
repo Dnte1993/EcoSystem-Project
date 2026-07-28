@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EcoSystem.Data.Models;
 using EcoSystem.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EcoSystem.API.Controllers
 {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductosController : ControllerBase

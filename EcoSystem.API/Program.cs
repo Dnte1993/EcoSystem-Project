@@ -5,7 +5,8 @@ using EcoSystem.Business.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using EcoSystem.Data.Models; // Reconocimiento de la clase JwtSettings
+using EcoSystem.Data.Models;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,8 +49,35 @@ builder.Services.AddControllers();
 
 // Habilitar Swagger (Interfaz Gráfica)
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingresa 'Bearer' [espacio] y luego tu token en la caja de texto.\r\n\r\nEjemplo: Bearer eyJhbGciOiJIUzI1..."
+    });
 
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// Construir la aplicación
 var app = builder.Build();
 
 // Configure the HTTP request pipeline para usar Swagger
