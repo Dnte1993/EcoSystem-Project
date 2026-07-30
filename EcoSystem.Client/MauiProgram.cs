@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using EcoSystem.Client.ViewModels;
 using EcoSystem.Client.Views;
+using EcoSystem.Client.Services;
 
 namespace EcoSystem.Client;
 
@@ -24,6 +25,7 @@ public static class MauiProgram
 		// ---> Registro de Dependencias <---
 		builder.Services.AddTransient<LoginViewModel>();
 		builder.Services.AddTransient<LoginPage>();
+		builder.Services.AddSingleton<ITokenService, SecureTokenService>();
 
 		return builder.Build();
 	}
