@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:EcoSystem.Client.ViewModels"
+             x:Class="EcoSystem.Client.Views.LoginPage"
+             Title="Iniciar Sesión">
+
+       <VerticalStackLayout Padding="30"
+                            Spacing="20"
+                            VerticalOptions="Center">
+
+              <Label Text="EcoSystem Connect"
+                     FontSize="32"
+                     HorizontalOptions="Center"
+                     FontAttributes="Bold"/>
+
+              <!-- Binding hacia la propiedad Email del ViewModel -->
+              <Entry Placeholder="Correo Electrónico"
+                     Text="{Binding Email}"
+                     Keyboard="Email"/>
+
+              <!-- Campo de contraseña manejado desde el code-behind por seguridad -->
+              <Entry x:Name="txtContrasena"
+                     Placeholder="Contraseña"
+                     IsPassword="True"
+                     TextChanged="txtContrasena_TextChanged"/>
+
+              <!-- Binding hacia el comando LoginCommand del ViewModel -->
+              <Button Text="Entrar"
+                      Command="{Binding LoginCommand}"
+                      BackgroundColor="#2B0B98"
+                      TextColor="White"
+                      CornerRadius="8"
+                      HeightRequest="50"/>
+
+              <!-- Botón de Prueba para la Firma 3 -->
+              <Button Text="Verificar Binding"
+                      Command="{Binding VerificarCommand}"
+                      BackgroundColor="#E28287"
+                      TextColor="White"
+                      CornerRadius="8"
+                      HeightRequest="50"/>
+
+       </VerticalStackLayout>
+</ContentPage>
