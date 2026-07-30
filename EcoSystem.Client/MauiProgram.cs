@@ -27,6 +27,16 @@ public static class MauiProgram
 		builder.Services.AddTransient<LoginPage>();
 		builder.Services.AddSingleton<ITokenService, SecureTokenService>();
 
+		// ---> NUEVO: Configuración del HttpClient para tu API <---
+		builder.Services.AddHttpClient("AuthApi", client =>
+		{
+			// Cambia esta URL por la dirección real donde está alojada tu API
+			client.BaseAddress = new Uri("https://ecosystem-project-p0c1.onrender.com");
+		});
+
+		// ---> NUEVO: Registro de AuthService <---
+		builder.Services.AddTransient<AuthService>();
+
 		return builder.Build();
 	}
 }
