@@ -51,12 +51,13 @@ namespace EcoSystem.Client.ViewModels
             LoginCommand = new Command(async () => await EjecutarLoginAsync());
 
             // Comando requerido para la Firma 3 (se mantiene intacto)
-            VerificarCommand = new Command(VerificarBinding);
+            VerificarCommand = new Command(async () => await VerificarBindingAsync());
         }
 
         // ---> 3. Lógica de autenticación contra la API en Render
         private async Task EjecutarLoginAsync()
         {
+            // AQUI ESTABA EL ERROR: Se restauró el mensaje original de validación
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Validación", "Por favor ingresa tu correo y contraseña.", "OK");
@@ -70,13 +71,14 @@ namespace EcoSystem.Client.ViewModels
 
                 if (result.Success)
                 {
+                    // PRUEBA DE LLEGADA: Colocada correctamente después de obtener 'result'
+                    await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
+
                     // Si responde un 200 OK, guardamos el token de forma segura
                     await _tokenService.SaveTokenAsync(result.Token, DateTime.UtcNow.AddHours(1));
 
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
-
-                    // Aquí posteriormente pondrás la navegación a tu página principal:
-                    // await Shell.Current.GoToAsync("//MainPage");
+                    // (Comentado temporalmente para no tener dos alertas seguidas)
+                    // await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
                 }
                 else
                 {
@@ -90,14 +92,18 @@ namespace EcoSystem.Client.ViewModels
             }
         }
 
-        private void VerificarBinding()
+        private async Task VerificarBindingAsync()
         {
             string mascaraPassword = string.IsNullOrEmpty(Password) ? "" : new string('*', Password.Length);
 
-            Application.Current.MainPage.DisplayAlert(
-                "Verificación de Binding",
-                $"Usuario en ViewModel: {Email}\nContraseña en ViewModel: {mascaraPassword}",
-                "OK");
+            // Recuperamos el token usando tu interfaz inyectada
+            string tokenGuardado = await _tokenService.GetTokenAsync();
+
+            string mensaje = $"Usuario en ViewModel: {Email}\n" +
+                             $"Contraseña en ViewModel: {mascaraPassword}\n\n" +
+                             $"Token Guardado:\n{(string.IsNullOrEmpty(tokenGuardado) ? "Ningún token guardado" : tokenGuardado)}";
+
+            await Application.Current.MainPage.DisplayAlert("Verificación de Seguridad", mensaje, "OK");
         }
 
         // --- Implementación de INotifyPropertyChanged ---

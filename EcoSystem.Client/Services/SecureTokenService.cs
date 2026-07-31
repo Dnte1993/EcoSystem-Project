@@ -1,4 +1,5 @@
 using System;
+using System.Globalization; // Necesario para DateTimeStyles
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 
@@ -22,9 +23,13 @@ namespace EcoSystem.Client.Services
 
             if (token is null) return null;
 
-            if (DateTime.TryParse(expiryStr, out var expiry) && expiry > DateTime.UtcNow)
+            // CORRECCIÓN: Usamos RoundtripKind para evitar que C# cambie la hora a local
+            if (DateTime.TryParse(expiryStr, null, DateTimeStyles.RoundtripKind, out var expiry))
             {
-                return token;
+                if (expiry > DateTime.UtcNow)
+                {
+                    return token;
+                }
             }
 
             await ClearTokenAsync();
