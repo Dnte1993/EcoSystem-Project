@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:EcoSystem.Client.ViewModels"
              x:Class="EcoSystem.Client.Views.ListaProductosPage"
              Title="Lista de Productos">
 
@@ -18,21 +19,46 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="5"
-                            Padding="15"
-                            CornerRadius="10"
-                            HasShadow="True"
-                            BorderColor="LightGray">
+                           Padding="15"
+                           CornerRadius="10"
+                           HasShadow="True"
+                           BorderColor="LightGray">
                         <VerticalStackLayout>
                             <Label Text="{Binding Nombre}"
-                                    FontSize="18"
-                                    FontAttributes="Bold"/>
+                                   FontSize="18"
+                                   FontAttributes="Bold"/>
                             <Label Text="{Binding Precio, StringFormat='Precio: {0:C}'}"
-                                    FontSize="14"
-                                    TextColor="Green"
-                                    Margin="0,5,0,0"/>
+                                   FontSize="14"
+                                   TextColor="Green"
+                                   Margin="0,5,0,0"/>
                             <Label Text="{Binding Stock, StringFormat='Stock en inventario: {0}'}"
-                                    FontSize="14"
-                                    TextColor="Gray"/>
+                                   FontSize="14"
+                                   TextColor="Gray"/>
+
+                            <!-- NUEVO: Botones de Acción (Editar y Eliminar) -->
+                            <HorizontalStackLayout Spacing="10"
+                                    HorizontalOptions="End"
+                                    Margin="0,15,0,0">
+
+                                <Button Text="Editar"
+                                        BackgroundColor="#2196F3"
+                                        TextColor="White"
+                                        CornerRadius="8"
+                                        HeightRequest="35"
+                                        Padding="15,0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ListaProductosViewModel}}, Path=EditarCommand}"
+                                        CommandParameter="{Binding .}"/>
+
+                                <Button Text="Eliminar"
+                                        BackgroundColor="#F44336"
+                                        TextColor="White"
+                                        CornerRadius="8"
+                                        HeightRequest="35"
+                                        Padding="15,0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ListaProductosViewModel}}, Path=EliminarCommand}"
+                                        CommandParameter="{Binding .}"/>
+
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>

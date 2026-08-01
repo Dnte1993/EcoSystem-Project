@@ -67,5 +67,53 @@ namespace EcoSystem.Client.Services
                 throw;
             }
         }
+
+        // --- NUEVO: MÉTODO PUT (Actualizar) ---
+        public async Task<bool> ActualizarProductoAsync(int id, Producto productoModificado)
+        {
+            try
+            {
+                string token = await _tokenService.GetTokenAsync();
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Hacemos el PUT enviando el ID en la URL y el objeto modificado en el cuerpo JSON
+                var response = await _httpClient.PutAsJsonAsync($"api/Productos/{id}", productoModificado);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ActualizarProductoAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        // --- NUEVO: MÉTODO DELETE (Eliminar) ---
+        public async Task<bool> EliminarProductoAsync(int id)
+        {
+            try
+            {
+                string token = await _tokenService.GetTokenAsync();
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                // Hacemos el DELETE enviando únicamente el ID en la URL
+                var response = await _httpClient.DeleteAsync($"api/Productos/{id}");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en EliminarProductoAsync: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

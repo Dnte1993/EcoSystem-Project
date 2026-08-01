@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic; // NUEVO: Para manejar el diccionario de parámetros
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -9,9 +10,13 @@ using EcoSystem.Client.Services;
 
 namespace EcoSystem.Client.ViewModels
 {
-    public class NuevoProductoViewModel : INotifyPropertyChanged
+    // NUEVO: Agregamos IQueryAttributable a la firma de la clase
+    public class NuevoProductoViewModel : INotifyPropertyChanged, IQueryAttributable
     {
         private readonly ProductoService _productoService;
+
+        // NUEVO: Variable oculta para saber si estamos editando
+        private Producto _productoEnEdicion;
 
         private string _nombre = string.Empty;
         public string Nombre
@@ -49,7 +54,6 @@ namespace EcoSystem.Client.ViewModels
             }
         }
 
-        // Variable para controlar el indicador de carga en la UI
         private bool _isBusy;
         public bool IsBusy
         {
@@ -64,50 +68,87 @@ namespace EcoSystem.Client.ViewModels
 
         public ICommand GuardarCommand { get; }
 
-        // Inyectamos nuestro nuevo ProductoService
         public NuevoProductoViewModel(ProductoService productoService)
         {
             _productoService = productoService;
             GuardarCommand = new Command(async () => await EjecutarGuardarAsync());
         }
 
+        // NUEVO: Método obligatorio de IQueryAttributable para recibir el parámetro
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey("ProductoSeleccionado") && query["ProductoSeleccionado"] is Producto producto)
+            {
+                // Guardamos la referencia original para tener el ID a la mano
+                _productoEnEdicion = producto;
+
+                // Llenamos las cajas de texto de la pantalla
+                Nombre = producto.Nombre;
+                Precio = producto.Precio;
+                Stock = producto.Stock;
+            }
+        }
+
         private async Task EjecutarGuardarAsync()
         {
-            // 1. Validación de datos locales
+            // 1. Validación
             if (string.IsNullOrWhiteSpace(Nombre) || Precio <= 0 || Stock < 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Validación", "Ingresa un nombre válido, un precio mayor a 0 y un stock válido.", "OK");
                 return;
             }
 
-            // 2. Activamos el estado de carga (deshabilitará el botón en la vista)
             IsBusy = true;
 
             try
             {
-                // Construimos el objeto a enviar
-                var nuevoProducto = new Producto
+                bool exito = false;
+
+                // 2. Evaluamos si es Creación o Edición (El Formulario Dual-Mode)
+                if (_productoEnEdicion == null)
                 {
-                    Nombre = Nombre,
-                    Precio = Precio,
-                    Stock = Stock
-                };
+                    // MODO CREACIÓN (POST)
+                    var nuevoProducto = new Producto
+                    {
+                        Nombre = Nombre,
+                        Precio = Precio,
+                        Stock = Stock
+                    };
 
-                // 3. Llamamos a nuestro servicio
-                bool exito = await _productoService.CrearProductoAsync(nuevoProducto);
+                    exito = await _productoService.CrearProductoAsync(nuevoProducto);
 
-                if (exito)
-                {
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Producto creado correctamente en la nube.", "OK");
-
-                    // Limpiamos los campos tras el éxito
-                    Nombre = string.Empty;
-                    Precio = 0;
-                    Stock = 0;
+                    if (exito)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Éxito", "Producto creado correctamente.", "OK");
+                    }
                 }
                 else
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "No se pudo crear. Verifica que tu sesión siga activa.", "OK");
+                    // MODO EDICIÓN (PUT)
+                    _productoEnEdicion.Nombre = Nombre;
+                    _productoEnEdicion.Precio = Precio;
+                    _productoEnEdicion.Stock = Stock;
+
+                    exito = await _productoService.ActualizarProductoAsync(_productoEnEdicion.Id, _productoEnEdicion);
+
+                    if (exito)
+                    {
+                        await Application.Current.MainPage.DisplayAlert("Éxito", "Producto actualizado correctamente.", "OK");
+                    }
+                }
+
+                // 3. Acciones posteriores si hubo éxito
+                if (exito)
+                {
+                    // Limpiamos la variable de edición
+                    _productoEnEdicion = null;
+
+                    // Regresamos a la pantalla anterior automáticamente
+                    await Shell.Current.GoToAsync("..");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "No se pudo guardar en la nube. Verifica tu conexión.", "OK");
                 }
             }
             catch (Exception ex)
@@ -116,7 +157,6 @@ namespace EcoSystem.Client.ViewModels
             }
             finally
             {
-                // 4. Apagamos el estado de carga pase lo que pase
                 IsBusy = false;
             }
         }
