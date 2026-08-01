@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 using EcoSystem.Client.Services;
+using EcoSystem.Client.Views; // ---> AGREGADO para reconocer NuevoProductoPage
 
 namespace EcoSystem.Client.ViewModels
 {
@@ -57,7 +58,6 @@ namespace EcoSystem.Client.ViewModels
         // ---> 3. Lógica de autenticación contra la API en Render
         private async Task EjecutarLoginAsync()
         {
-            // AQUI ESTABA EL ERROR: Se restauró el mensaje original de validación
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
             {
                 await Application.Current.MainPage.DisplayAlert("Validación", "Por favor ingresa tu correo y contraseña.", "OK");
@@ -71,14 +71,14 @@ namespace EcoSystem.Client.ViewModels
 
                 if (result.Success)
                 {
-                    // PRUEBA DE LLEGADA: Colocada correctamente después de obtener 'result'
-                    await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
-
-                    // Si responde un 200 OK, guardamos el token de forma segura
+                    // 1. Guardamos el token de forma segura
                     await _tokenService.SaveTokenAsync(result.Token, DateTime.UtcNow.AddHours(1));
 
-                    // (Comentado temporalmente para no tener dos alertas seguidas)
-                    // await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
+                    // 2. Mostramos la alerta definitiva de éxito
+                    await Application.Current.MainPage.DisplayAlert("Éxito", "Inicio de sesión correcto.", "OK");
+
+                    // 3. ---> NUEVO: Navegamos a la pantalla de crear producto <---
+                    await Shell.Current.GoToAsync(nameof(NuevoProductoPage));
                 }
                 else
                 {

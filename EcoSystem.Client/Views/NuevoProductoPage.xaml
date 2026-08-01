@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EcoSystem.Client.Views.NuevoProductoPage"
+             Title="Crear Nuevo Producto">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30"
+                Spacing="20"
+                VerticalOptions="Center">
+
+            <Label Text="Alta de Producto"
+                   FontSize="32"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"/>
+
+            <!-- Campos de texto enlazados al ViewModel -->
+            <Entry Placeholder="Nombre del Producto"
+                   Text="{Binding Nombre}"/>
+
+            <Entry Placeholder="Precio (Ej. 1500.50)"
+                   Text="{Binding Precio}"
+                   Keyboard="Numeric"/>
+
+            <Entry Placeholder="Stock (Ej. 50)"
+                   Text="{Binding Stock}"
+                   Keyboard="Numeric"/>
+
+            <!-- Indicador de carga -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#2B0B98"
+                               HorizontalOptions="Center"/>
+
+            <!-- Botón Guardar con Trigger para deshabilitar mientras procesa -->
+            <Button Text="Guardar Producto"
+                    Command="{Binding GuardarCommand}"
+                    BackgroundColor="#2B0B98"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                            Binding="{Binding IsBusy}"
+                            Value="True">
+                        <Setter Property="IsEnabled"
+                                Value="False"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
