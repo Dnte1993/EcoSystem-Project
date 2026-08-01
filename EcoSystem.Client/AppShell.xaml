@@ -7,9 +7,22 @@
     xmlns:views="clr-namespace:EcoSystem.Client.Views"
     Title="EcoSystem.Client">
 
+    <!-- Pestaña 1: Login -->
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage"/>
+
+    <!-- Pestaña 2: NUEVA FIRMA 6 (GET) -->
+    <ShellContent
+        Title="Inventario"
+        ContentTemplate="{DataTemplate views:ListaProductosPage}"
+        Route="ListaProductosPage"/>
+
+    <!-- Pestaña 3: Crear Producto (POST) -->
+    <ShellContent
+        Title="Nuevo"
+        ContentTemplate="{DataTemplate views:NuevoProductoPage}"
+        Route="NuevoProductoPage"/>
 
 </Shell>
