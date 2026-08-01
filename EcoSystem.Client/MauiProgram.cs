@@ -31,6 +31,7 @@ public static class MauiProgram
 
 		// NUEVO: Registramos el ViewModel que acabamos de crear
 		builder.Services.AddTransient<ListaProductosViewModel>();
+		builder.Services.AddTransient<ListaProductosPage>();
 
 		// ---> NUEVO: Configuración del HttpClient para tu API <---
 		builder.Services.AddHttpClient("AuthApi", client =>
