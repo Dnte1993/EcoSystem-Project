@@ -13,7 +13,7 @@ namespace EcoSystem.Client.ViewModels
 {
     public class ListaProductosViewModel : INotifyPropertyChanged
     {
-        private readonly ProductoService _productoService;
+        private readonly ApiService _apiService;
 
         // ObservableCollection es clave: actualiza la UI automáticamente al recibir datos
         public ObservableCollection<Producto> Productos { get; } = new ObservableCollection<Producto>();
@@ -36,9 +36,9 @@ namespace EcoSystem.Client.ViewModels
         public ICommand EditarCommand { get; }
         public ICommand EliminarCommand { get; }
 
-        public ListaProductosViewModel(ProductoService productoService)
+        public ListaProductosViewModel(ApiService apiService)
         {
-            _productoService = productoService;
+            _apiService = apiService;
             CargarProductosCommand = new Command(async () => await CargarProductosAsync());
 
             // NUEVO: Inicializar los comandos
@@ -59,7 +59,7 @@ namespace EcoSystem.Client.ViewModels
                 Productos.Clear();
 
                 // Llamamos al servicio GET que creamos en el paso anterior
-                var productosDesdeApi = await _productoService.GetProductosAsync();
+                var productosDesdeApi = await _apiService.GetProductosAsync();
 
                 // Llenamos la colección uno por uno para que la vista se entere
                 foreach (var prod in productosDesdeApi)
@@ -112,7 +112,7 @@ namespace EcoSystem.Client.ViewModels
             try
             {
                 // 2. Llamada a la API
-                bool exito = await _productoService.EliminarProductoAsync(producto.Id);
+                bool exito = await _apiService.EliminarProductoAsync(producto.Id);
 
                 if (exito)
                 {

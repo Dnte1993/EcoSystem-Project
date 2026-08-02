@@ -45,7 +45,7 @@ public static class MauiProgram
 
 		// ---> Registro de Servicios <---
 		builder.Services.AddTransient<AuthService>();
-		builder.Services.AddTransient<ProductoService>();
+		builder.Services.AddTransient<ApiService>();
 
 		return builder.Build();
 	}

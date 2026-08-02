@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic; // NUEVO: Para manejar el diccionario de parámetros
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -10,12 +10,10 @@ using EcoSystem.Client.Services;
 
 namespace EcoSystem.Client.ViewModels
 {
-    // NUEVO: Agregamos IQueryAttributable a la firma de la clase
     public class NuevoProductoViewModel : INotifyPropertyChanged, IQueryAttributable
     {
-        private readonly ProductoService _productoService;
+        private readonly ApiService _apiService;
 
-        // NUEVO: Variable oculta para saber si estamos editando
         private Producto _productoEnEdicion;
 
         private string _nombre = string.Empty;
@@ -68,21 +66,17 @@ namespace EcoSystem.Client.ViewModels
 
         public ICommand GuardarCommand { get; }
 
-        public NuevoProductoViewModel(ProductoService productoService)
+        public NuevoProductoViewModel(ApiService apiService)
         {
-            _productoService = productoService;
+            _apiService = apiService;
             GuardarCommand = new Command(async () => await EjecutarGuardarAsync());
         }
 
-        // NUEVO: Método obligatorio de IQueryAttributable para recibir el parámetro
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.ContainsKey("ProductoSeleccionado") && query["ProductoSeleccionado"] is Producto producto)
             {
-                // Guardamos la referencia original para tener el ID a la mano
                 _productoEnEdicion = producto;
-
-                // Llenamos las cajas de texto de la pantalla
                 Nombre = producto.Nombre;
                 Precio = producto.Precio;
                 Stock = producto.Stock;
@@ -91,7 +85,6 @@ namespace EcoSystem.Client.ViewModels
 
         private async Task EjecutarGuardarAsync()
         {
-            // 1. Validación
             if (string.IsNullOrWhiteSpace(Nombre) || Precio <= 0 || Stock < 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Validación", "Ingresa un nombre válido, un precio mayor a 0 y un stock válido.", "OK");
@@ -104,7 +97,6 @@ namespace EcoSystem.Client.ViewModels
             {
                 bool exito = false;
 
-                // 2. Evaluamos si es Creación o Edición (El Formulario Dual-Mode)
                 if (_productoEnEdicion == null)
                 {
                     // MODO CREACIÓN (POST)
@@ -115,7 +107,7 @@ namespace EcoSystem.Client.ViewModels
                         Stock = Stock
                     };
 
-                    exito = await _productoService.CrearProductoAsync(nuevoProducto);
+                    exito = await _apiService.CrearProductoAsync(nuevoProducto);
 
                     if (exito)
                     {
@@ -129,7 +121,7 @@ namespace EcoSystem.Client.ViewModels
                     _productoEnEdicion.Precio = Precio;
                     _productoEnEdicion.Stock = Stock;
 
-                    exito = await _productoService.ActualizarProductoAsync(_productoEnEdicion.Id, _productoEnEdicion);
+                    exito = await _apiService.ActualizarProductoAsync(_productoEnEdicion.Id, _productoEnEdicion);
 
                     if (exito)
                     {
@@ -137,13 +129,9 @@ namespace EcoSystem.Client.ViewModels
                     }
                 }
 
-                // 3. Acciones posteriores si hubo éxito
                 if (exito)
                 {
-                    // Limpiamos la variable de edición
                     _productoEnEdicion = null;
-
-                    // Regresamos a la pantalla anterior automáticamente
                     await Shell.Current.GoToAsync("..");
                 }
                 else
@@ -161,10 +149,10 @@ namespace EcoSystem.Client.ViewModels
             }
         }
 
-        // --- Implementación de INotifyPropertyChanged ---
-        public event PropertyChangedEventHandler PropertyChanged;
+        // AQUI ESTÁN LOS SIGNOS DE INTERROGACIÓN AGREGADOS PARA QUITAR LOS WARNINGS
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
