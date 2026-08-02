@@ -29,18 +29,21 @@ public static class MauiProgram
 		builder.Services.AddTransient<NuevoProductoViewModel>();
 		builder.Services.AddTransient<NuevoProductoPage>();
 
-		// NUEVO: Registramos el ViewModel que acabamos de crear
 		builder.Services.AddTransient<ListaProductosViewModel>();
 		builder.Services.AddTransient<ListaProductosPage>();
 
-		// ---> NUEVO: Configuración del HttpClient para tu API <---
+		// ---> NUEVO: Registramos el interceptor que acabas de crear <---
+		builder.Services.AddTransient<Handlers.AuthHandler>();
+
+		// ---> MODIFICADO: Configuración del HttpClient conectado al AuthHandler <---
 		builder.Services.AddHttpClient("AuthApi", client =>
 		{
-			// Cambia esta URL por la dirección real donde está alojada tu API
+			// Apuntamos a tu API alojada en Render
 			client.BaseAddress = new Uri("https://ecosystem-project-p0c1.onrender.com");
-		});
+		})
+		.AddHttpMessageHandler<Handlers.AuthHandler>(); // ¡Esta línea es el pegamento mágico!
 
-		// ---> NUEVO: Registro de AuthService <---
+		// ---> Registro de Servicios <---
 		builder.Services.AddTransient<AuthService>();
 		builder.Services.AddTransient<ProductoService>();
 

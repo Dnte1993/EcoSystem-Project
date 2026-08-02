@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using EcoSystem.Client.Models;
@@ -10,49 +9,27 @@ namespace EcoSystem.Client.Services
     public class ProductoService
     {
         private readonly HttpClient _httpClient;
-        private readonly ITokenService _tokenService;
 
-        public ProductoService(IHttpClientFactory httpClientFactory, ITokenService tokenService)
+        public ProductoService(IHttpClientFactory httpClientFactory)
         {
-            // Se conecta al cliente HTTP que registraste en MauiProgram
+            // Este cliente ya viene con el AuthHandler conectado
             _httpClient = httpClientFactory.CreateClient("AuthApi");
-            _tokenService = tokenService;
         }
 
         public async Task<bool> CrearProductoAsync(Producto nuevoProducto)
         {
-            // Obtenemos el JWT almacenado
-            string token = await _tokenService.GetTokenAsync();
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            // Hacemos el POST al endpoint exacto de tu API
             var response = await _httpClient.PostAsJsonAsync("api/Productos", nuevoProducto);
-
             return response.IsSuccessStatusCode;
         }
 
-        // --- NUEVA FIRMA 6: MÉTODO GET ---
         public async Task<List<Producto>> GetProductosAsync()
         {
             try
             {
-                string token = await _tokenService.GetTokenAsync();
-
-                if (!string.IsNullOrEmpty(token))
-                {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                // Hacemos el GET al endpoint
                 var response = await _httpClient.GetAsync("api/Productos");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Deserializamos el JSON de tu API a una lista en C#
                     var productos = await response.Content.ReadFromJsonAsync<List<Producto>>();
                     return productos ?? new List<Producto>();
                 }
@@ -68,21 +45,11 @@ namespace EcoSystem.Client.Services
             }
         }
 
-        // --- NUEVO: MÉTODO PUT (Actualizar) ---
         public async Task<bool> ActualizarProductoAsync(int id, Producto productoModificado)
         {
             try
             {
-                string token = await _tokenService.GetTokenAsync();
-
-                if (!string.IsNullOrEmpty(token))
-                {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                // Hacemos el PUT enviando el ID en la URL y el objeto modificado en el cuerpo JSON
                 var response = await _httpClient.PutAsJsonAsync($"api/Productos/{id}", productoModificado);
-
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
@@ -92,21 +59,11 @@ namespace EcoSystem.Client.Services
             }
         }
 
-        // --- NUEVO: MÉTODO DELETE (Eliminar) ---
         public async Task<bool> EliminarProductoAsync(int id)
         {
             try
             {
-                string token = await _tokenService.GetTokenAsync();
-
-                if (!string.IsNullOrEmpty(token))
-                {
-                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
-                // Hacemos el DELETE enviando únicamente el ID en la URL
                 var response = await _httpClient.DeleteAsync($"api/Productos/{id}");
-
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
