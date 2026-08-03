@@ -13,7 +13,6 @@ namespace EcoSystem.Client.Services
 
         public AuthService(IHttpClientFactory factory)
         {
-            // Solicitamos el cliente HTTP configurado desde el contenedor
             _httpClient = factory.CreateClient("AuthApi");
         }
 
@@ -25,7 +24,6 @@ namespace EcoSystem.Client.Services
                 Password = password
             };
 
-            // Se envía por POST en formato JSON como exige la rúbrica
             var response = await _httpClient.PostAsJsonAsync("/api/auth/login", payload, cancellationToken);
 
             return response.StatusCode switch
@@ -33,7 +31,8 @@ namespace EcoSystem.Client.Services
                 HttpStatusCode.OK => new LoginResult
                 {
                     Success = true,
-                    Token = (await response.Content.ReadFromJsonAsync<AuthResponse>())?.Token
+                    // CORRECCIÓN: Si el token viene nulo desde la API, asignamos string.Empty
+                    Token = (await response.Content.ReadFromJsonAsync<AuthResponse>())?.Token ?? string.Empty
                 },
                 HttpStatusCode.Unauthorized => new LoginResult
                 {

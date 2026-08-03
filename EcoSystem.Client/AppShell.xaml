@@ -21,7 +21,7 @@
 
     <!-- Pestaña 3: Crear Producto (POST) -->
     <ShellContent
-        Title="Nuevo"
+        Title="Agregar"
         ContentTemplate="{DataTemplate views:NuevoProductoPage}"
         Route="NuevoProductoPage"/>
 

@@ -7,8 +7,8 @@ namespace EcoSystem.Client.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
-    private string title = "EcoSystem Connect";
+    public partial string Title { get; set; } = "EcoSystem Connect";
 
     [ObservableProperty]
-    private List<Ecosystem> ecosystems = new();
+    public partial List<Ecosystem> Ecosystems { get; set; } = new();
 }

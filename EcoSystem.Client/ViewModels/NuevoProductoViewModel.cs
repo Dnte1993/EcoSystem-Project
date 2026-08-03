@@ -14,7 +14,8 @@ namespace EcoSystem.Client.ViewModels
     {
         private readonly ApiService _apiService;
 
-        private Producto _productoEnEdicion;
+        // Marcado como anulable para solucionar el warning CS8618
+        private Producto? _productoEnEdicion;
 
         private string _nombre = string.Empty;
         public string Nombre
@@ -87,7 +88,7 @@ namespace EcoSystem.Client.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Nombre) || Precio <= 0 || Stock < 0)
             {
-                await Application.Current.MainPage.DisplayAlert("Validación", "Ingresa un nombre válido, un precio mayor a 0 y un stock válido.", "OK");
+                await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Validación", "Ingresa un nombre válido, un precio mayor a 0 y un stock válido.", "OK");
                 return;
             }
 
@@ -99,7 +100,6 @@ namespace EcoSystem.Client.ViewModels
 
                 if (_productoEnEdicion == null)
                 {
-                    // MODO CREACIÓN (POST)
                     var nuevoProducto = new Producto
                     {
                         Nombre = Nombre,
@@ -111,12 +111,11 @@ namespace EcoSystem.Client.ViewModels
 
                     if (exito)
                     {
-                        await Application.Current.MainPage.DisplayAlert("Éxito", "Producto creado correctamente.", "OK");
+                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto creado correctamente.", "OK");
                     }
                 }
                 else
                 {
-                    // MODO EDICIÓN (PUT)
                     _productoEnEdicion.Nombre = Nombre;
                     _productoEnEdicion.Precio = Precio;
                     _productoEnEdicion.Stock = Stock;
@@ -125,7 +124,7 @@ namespace EcoSystem.Client.ViewModels
 
                     if (exito)
                     {
-                        await Application.Current.MainPage.DisplayAlert("Éxito", "Producto actualizado correctamente.", "OK");
+                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto actualizado correctamente.", "OK");
                     }
                 }
 
@@ -136,12 +135,12 @@ namespace EcoSystem.Client.ViewModels
                 }
                 else
                 {
-                    await Application.Current.MainPage.DisplayAlert("Error", "No se pudo guardar en la nube. Verifica tu conexión.", "OK");
+                    await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Error", "No se pudo guardar en la nube. Verifica tu conexión.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error inesperado", ex.Message, "OK");
+                await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Error inesperado", ex.Message, "OK");
             }
             finally
             {
@@ -149,7 +148,6 @@ namespace EcoSystem.Client.ViewModels
             }
         }
 
-        // AQUI ESTÁN LOS SIGNOS DE INTERROGACIÓN AGREGADOS PARA QUITAR LOS WARNINGS
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string? name = null)

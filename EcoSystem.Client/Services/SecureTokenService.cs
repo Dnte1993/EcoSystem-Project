@@ -1,5 +1,5 @@
 using System;
-using System.Globalization; // Necesario para DateTimeStyles
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 
@@ -21,9 +21,9 @@ namespace EcoSystem.Client.Services
             var token = await SecureStorage.Default.GetAsync(TokenKey);
             var expiryStr = await SecureStorage.Default.GetAsync(ExpiryKey);
 
-            if (token is null) return null;
+            // CORRECCIÓN: Devolver string.Empty en lugar de null
+            if (token is null) return string.Empty;
 
-            // CORRECCIÓN: Usamos RoundtripKind para evitar que C# cambie la hora a local
             if (DateTime.TryParse(expiryStr, null, DateTimeStyles.RoundtripKind, out var expiry))
             {
                 if (expiry > DateTime.UtcNow)
@@ -33,7 +33,8 @@ namespace EcoSystem.Client.Services
             }
 
             await ClearTokenAsync();
-            return null;
+            // CORRECCIÓN: Devolver string.Empty en lugar de null
+            return string.Empty;
         }
 
         public Task ClearTokenAsync()

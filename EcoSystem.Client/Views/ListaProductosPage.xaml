@@ -18,11 +18,24 @@
         <CollectionView ItemsSource="{Binding Productos}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="5"
-                           Padding="15"
-                           CornerRadius="10"
-                           HasShadow="True"
-                           BorderColor="LightGray">
+
+                    <!-- NUEVO CONTENEDOR: Reemplazo de Frame por Border -->
+                    <Border Margin="5"
+                            Padding="15"
+                            Stroke="LightGray"
+                            StrokeThickness="1">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10"/>
+                        </Border.StrokeShape>
+
+                        <Border.Shadow>
+                            <Shadow Brush="Black"
+                                    Offset="0,2"
+                                    Radius="5"
+                                    Opacity="0.1"/>
+                        </Border.Shadow>
+
                         <VerticalStackLayout>
                             <Label Text="{Binding Nombre}"
                                    FontSize="18"
@@ -35,10 +48,10 @@
                                    FontSize="14"
                                    TextColor="Gray"/>
 
-                            <!-- NUEVO: Botones de Acción (Editar y Eliminar) -->
+                            <!-- Botones de Acción (Editar y Eliminar) -->
                             <HorizontalStackLayout Spacing="10"
-                                    HorizontalOptions="End"
-                                    Margin="0,15,0,0">
+                                                   HorizontalOptions="End"
+                                                   Margin="0,15,0,0">
 
                                 <Button Text="Editar"
                                         BackgroundColor="#2196F3"
@@ -60,7 +73,8 @@
 
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
