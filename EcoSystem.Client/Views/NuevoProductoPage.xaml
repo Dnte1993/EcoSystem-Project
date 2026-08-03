@@ -2,19 +2,26 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="EcoSystem.Client.Views.NuevoProductoPage"
-             Title="Agregar Producto">
+             Title="Agregar Producto"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="30"
-                             Spacing="20"
-                             VerticalOptions="Center">
+    <!-- Cambiamos a 3 filas: Formulario (Auto), Título de la lista (Auto) y Lista (*) -->
+    <Grid RowDefinitions="Auto, Auto, *">
+
+        <!-- ========================================== -->
+        <!-- 1. MITAD SUPERIOR: FORMULARIO              -->
+        <!-- ========================================== -->
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="30,30,30,10"
+                             Spacing="15"
+                             MaximumWidthRequest="450"
+                             HorizontalOptions="Center">
 
             <Label Text="Agregar Producto"
-                   FontSize="32"
-                   HorizontalOptions="Center"
-                   FontAttributes="Bold"/>
+                   Style="{StaticResource HeaderTitle}"
+                   Margin="0,0,0,10"/>
 
-            <!-- Campos de texto enlazados al ViewModel -->
             <Entry Placeholder="Nombre del Producto"
                    Text="{Binding Nombre}"/>
 
@@ -26,19 +33,14 @@
                    Text="{Binding Stock}"
                    Keyboard="Numeric"/>
 
-            <!-- Indicador de carga -->
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                                IsVisible="{Binding IsBusy}"
-                               Color="#2B0B98"
+                               Color="{StaticResource BrandPrimary}"
                                HorizontalOptions="Center"/>
 
-            <!-- Botón Agregar con Trigger para deshabilitar mientras procesa -->
-            <Button Text="Agregar"
+            <Button Text="Agregar Producto"
                     Command="{Binding GuardarCommand}"
-                    BackgroundColor="#2B0B98"
-                    TextColor="White"
-                    CornerRadius="8"
-                    HeightRequest="50">
+                    Style="{StaticResource PrimaryButton}">
                 <Button.Triggers>
                     <DataTrigger TargetType="Button"
                                  Binding="{Binding IsBusy}"
@@ -48,7 +50,68 @@
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
-
         </VerticalStackLayout>
-    </ScrollView>
+
+        <!-- ========================================== -->
+        <!-- 2. TÍTULO DE LA LISTA (Separado)           -->
+        <!-- ========================================== -->
+        <Label Grid.Row="1"
+               Text="Agregados en esta sesión:"
+               FontAttributes="Bold"
+               FontSize="16"
+               Margin="20,10,20,5"
+               HorizontalOptions="Center"
+               MaximumWidthRequest="450"
+               HorizontalTextAlignment="Start"
+               WidthRequest="450"
+               TextColor="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark=White}"/>
+
+        <!-- ========================================== -->
+        <!-- 3. MITAD INFERIOR: LISTA DE AGREGADOS      -->
+        <!-- ========================================== -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding ProductosRecientes}"
+                        MaximumWidthRequest="450"
+                        HorizontalOptions="Center"
+                        Margin="20,0,20,20">
+
+            <CollectionView.EmptyView>
+                <!-- Al estar separado del título, este texto ya no se va a encimar -->
+                <Label Text="Los productos que agregues aparecerán aquí abajo."
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       TextColor="Gray"
+                       Margin="0,20,0,0"/>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="15"
+                            Margin="0,5,0,10"
+                            Stroke="LightGray"
+                            StrokeShape="RoundRectangle 8"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Grid.Column="0"
+                                   Text="{Binding Nombre}"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"/>
+
+                            <VerticalStackLayout Grid.Column="1"
+                                    HorizontalOptions="End">
+                                <Label Text="{Binding Precio, StringFormat='${0:F2}'}"
+                                       TextColor="{StaticResource BrandSecondary}"
+                                       FontAttributes="Bold"/>
+                                <Label Text="{Binding Stock, StringFormat='Stock: {0}'}"
+                                       FontSize="12"
+                                       TextColor="Gray"
+                                       HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
 </ContentPage>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EcoSystem.Client.Views.RegistroUsuarioPage"
+             Title="Crear Cuenta"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
+
+    <VerticalStackLayout Padding="30"
+                         Spacing="20"
+                         VerticalOptions="Center"
+                         MaximumWidthRequest="450">
+
+        <Label Text="Nuevo Usuario"
+               Style="{StaticResource HeaderTitle}"/>
+
+        <!-- Conectado a la propiedad Username del ViewModel -->
+        <Entry Placeholder="Usuario o Correo"
+               Text="{Binding Username}"
+               Keyboard="Email"/>
+
+        <!-- Conectado a la propiedad Password del ViewModel -->
+        <Entry Placeholder="Contraseña"
+               Text="{Binding Password}"
+               IsPassword="True"/>
+
+        <!-- Conectado al comando RegistrarCommand del ViewModel -->
+        <Button Text="Registrar"
+                Command="{Binding RegistrarCommand}"
+                Style="{StaticResource PrimaryButton}"/>
+
+        <Button Text="Cancelar y volver"
+                Clicked="OnCancelarClicked"
+                Style="{StaticResource SecondaryButton}"
+                Margin="0,15,0,0"/>
+
+    </VerticalStackLayout>
+</ContentPage>

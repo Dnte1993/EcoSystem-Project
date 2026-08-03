@@ -3,16 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:EcoSystem.Client.ViewModels"
              x:Class="EcoSystem.Client.Views.LoginPage"
-             Title="Iniciar Sesión">
+             Title="Iniciar Sesión"
+             Shell.NavBarIsVisible="False"
+             NavigationPage.HasNavigationBar="False">
 
+       <!-- Agregamos MaximumWidthRequest="450" para hacer el efecto de "tarjeta centrada" -->
        <VerticalStackLayout Padding="30"
                             Spacing="20"
-                            VerticalOptions="Center">
+                            VerticalOptions="Center"
+                            MaximumWidthRequest="450">
 
               <Label Text="EcoSystem Connect"
-                     FontSize="32"
-                     HorizontalOptions="Center"
-                     FontAttributes="Bold"/>
+                     Style="{StaticResource HeaderTitle}"/>
 
               <!-- Binding hacia la propiedad Email del ViewModel -->
               <Entry Placeholder="Correo Electrónico"
@@ -28,18 +30,18 @@
               <!-- Binding hacia el comando LoginCommand del ViewModel -->
               <Button Text="Entrar"
                       Command="{Binding LoginCommand}"
-                      BackgroundColor="#2B0B98"
-                      TextColor="White"
-                      CornerRadius="8"
-                      HeightRequest="50"/>
+                      Style="{StaticResource PrimaryButton}"/>
 
               <!-- Botón de Prueba para la Firma 3 -->
               <Button Text="Verificar Binding"
                       Command="{Binding VerificarCommand}"
-                      BackgroundColor="#E28287"
-                      TextColor="White"
-                      CornerRadius="8"
-                      HeightRequest="50"/>
+                      Style="{StaticResource SecondaryButton}"/>
+
+              <!-- NUEVO: Botón público para ir al registro -->
+              <Button Text="¿No tienes cuenta? Regístrate aquí"
+                      Style="{StaticResource SecondaryButton}"
+                      Margin="0,15,0,0"
+                      Clicked="OnIrARegistroClicked"/>
 
        </VerticalStackLayout>
 </ContentPage>

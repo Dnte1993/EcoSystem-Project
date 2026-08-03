@@ -1,3 +1,4 @@
+using System; // Necesario para EventArgs
 using Microsoft.Maui.Controls;
 using EcoSystem.Client.ViewModels;
 
@@ -20,6 +21,13 @@ namespace EcoSystem.Client.Views
             {
                 vm.Password = e.NewTextValue;
             }
+        }
+
+        // NUEVO: Navegación hacia la página de registro de usuarios
+        // CORRECCIÓN: Agregamos el '?' en object? sender
+        private async void OnIrARegistroClicked(object? sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(RegistroUsuarioPage));
         }
     }
 }

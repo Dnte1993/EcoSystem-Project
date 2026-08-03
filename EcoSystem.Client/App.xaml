@@ -3,12 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:EcoSystem.Client"
              x:Class="EcoSystem.Client.App">
+
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Aquí se cargan los estilos base de MAUI -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- ========================================== -->
+            <!-- 1. COLORES PERSONALIZADOS DE ECOSYSTEM     -->
+            <!-- ========================================== -->
+            <Color x:Key="BrandPrimary">#2B0B98</Color>
+            <Color x:Key="BrandSecondary">#E28287</Color>
+            <Color x:Key="BrandBackground">#F8F9FA</Color>
+            <Color x:Key="BrandSurface">#FFFFFF</Color>
+            <Color x:Key="BrandText">#212529</Color>
+
+            <!-- ========================================== -->
+            <!-- 2. ESTILOS REUTILIZABLES (Botones y Textos)-->
+            <!-- ========================================== -->
+
+            <!-- Botón Principal -->
+            <Style x:Key="PrimaryButton"
+                   TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource BrandPrimary}"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="HeightRequest"
+                        Value="50"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <!-- Sombra sutil para darle volumen -->
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black"
+                                Offset="0,2"
+                                Radius="4"
+                                Opacity="0.2"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Botón Secundario (Ej. Verificar Binding) -->
+            <Style x:Key="SecondaryButton"
+                   TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource BrandSecondary}"/>
+                <Setter Property="TextColor"
+                        Value="White"/>
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="HeightRequest"
+                        Value="50"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black"
+                                Offset="0,2"
+                                Radius="4"
+                                Opacity="0.2"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Título Principal de la Pantalla -->
+            <Style x:Key="HeaderTitle"
+                   TargetType="Label">
+                <!-- MAGIA AQUÍ: Soporte automático para Tema Claro y Oscuro -->
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource BrandPrimary}, Dark=White}"/>
+                <Setter Property="FontSize"
+                        Value="32"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="HorizontalOptions"
+                        Value="Center"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

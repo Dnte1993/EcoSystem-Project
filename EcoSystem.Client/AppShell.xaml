@@ -13,7 +13,7 @@
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage"/>
 
-    <!-- Pestaña 2: NUEVA FIRMA 6 (GET) -->
+    <!-- Pestaña 2: Inventario (GET) -->
     <ShellContent
         Title="Inventario"
         ContentTemplate="{DataTemplate views:ListaProductosPage}"
@@ -24,5 +24,10 @@
         Title="Agregar"
         ContentTemplate="{DataTemplate views:NuevoProductoPage}"
         Route="NuevoProductoPage"/>
+
+    <!-- Botón de acción para Cerrar Sesión -->
+    <MenuItem
+        Text="Cerrar Sesión"
+        Clicked="OnCerrarSesionClicked"/>
 
 </Shell>

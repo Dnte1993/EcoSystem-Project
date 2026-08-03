@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel; // <-- Necesario para ObservableCollection
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -14,8 +15,10 @@ namespace EcoSystem.Client.ViewModels
     {
         private readonly ApiService _apiService;
 
-        // Marcado como anulable para solucionar el warning CS8618
         private Producto? _productoEnEdicion;
+
+        // NUEVO: Lista reactiva para la interfaz
+        public ObservableCollection<Producto> ProductosRecientes { get; } = new ObservableCollection<Producto>();
 
         private string _nombre = string.Empty;
         public string Nombre
@@ -97,22 +100,18 @@ namespace EcoSystem.Client.ViewModels
             try
             {
                 bool exito = false;
+                var productoCreado = new Producto(); // Para guardarlo temporalmente en memoria
 
                 if (_productoEnEdicion == null)
                 {
-                    var nuevoProducto = new Producto
+                    productoCreado = new Producto
                     {
                         Nombre = Nombre,
                         Precio = Precio,
                         Stock = Stock
                     };
 
-                    exito = await _apiService.CrearProductoAsync(nuevoProducto);
-
-                    if (exito)
-                    {
-                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto creado correctamente.", "OK");
-                    }
+                    exito = await _apiService.CrearProductoAsync(productoCreado);
                 }
                 else
                 {
@@ -121,21 +120,34 @@ namespace EcoSystem.Client.ViewModels
                     _productoEnEdicion.Stock = Stock;
 
                     exito = await _apiService.ActualizarProductoAsync(_productoEnEdicion.Id, _productoEnEdicion);
-
-                    if (exito)
-                    {
-                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto actualizado correctamente.", "OK");
-                    }
                 }
 
                 if (exito)
                 {
-                    _productoEnEdicion = null;
-                    await Shell.Current.GoToAsync("..");
+                    if (_productoEnEdicion == null)
+                    {
+                        // ES UN PRODUCTO NUEVO
+                        // 1. Lo agregamos al inicio de la lista visual (índice 0)
+                        ProductosRecientes.Insert(0, productoCreado);
+
+                        // 2. Limpiamos los campos para el siguiente producto
+                        Nombre = string.Empty;
+                        Precio = 0;
+                        Stock = 0;
+
+                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto agregado a la base de datos.", "OK");
+                    }
+                    else
+                    {
+                        // ES UNA EDICIÓN
+                        await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Éxito", "Producto actualizado correctamente.", "OK");
+                        _productoEnEdicion = null;
+                        await Shell.Current.GoToAsync(".."); // Solo regresamos si estábamos editando
+                    }
                 }
                 else
                 {
-                    await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Error", "No se pudo guardar en la nube. Verifica tu conexión.", "OK");
+                    await Application.Current!.Windows[0].Page!.DisplayAlertAsync("Error", "No se pudo guardar. Verifica tu conexión.", "OK");
                 }
             }
             catch (Exception ex)
